@@ -1,0 +1,151 @@
+/* =========================================================
+   Threadly — animations (CSS only, no JavaScript)
+   Everything is progressive enhancement: if a browser does not
+   support a feature the page simply shows its final state.
+   ========================================================= */
+
+/* ---------- Smooth page-to-page transitions (Chrome / Edge / Safari) ---------- */
+@view-transition { navigation: auto; }
+::view-transition-old(root) { animation: 0.25s ease both fade-out; }
+::view-transition-new(root) { animation: 0.4s ease both fade-in; }
+
+/* ---------- Keyframes ---------- */
+@keyframes fade-in { from { opacity: 0; } }
+@keyframes fade-out { to { opacity: 0; } }
+@keyframes fade-up { from { opacity: 0; transform: translateY(32px); } }
+@keyframes reveal-up { from { opacity: 0; transform: translateY(46px) scale(0.97); } }
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); }
+  50% { transform: translateY(-16px) rotate(calc(var(--r, 0deg) + 2.5deg)); }
+}
+@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+@keyframes morph {
+  0%, 100% { border-radius: 60% 40% 55% 45% / 55% 45% 55% 45%; transform: rotate(0deg); }
+  33% { border-radius: 45% 55% 40% 60% / 60% 40% 60% 40%; }
+  66% { border-radius: 55% 45% 60% 40% / 40% 60% 45% 55%; transform: rotate(6deg); }
+}
+@keyframes drift { from { transform: translate(0, 0); } to { transform: translate(-36px, 30px) scale(1.08); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes marquee { to { transform: translateX(-50%); } }
+@keyframes msg {
+  0% { opacity: 0; transform: translateY(12px); }
+  5%, 30% { opacity: 1; transform: none; }
+  35%, 100% { opacity: 0; transform: translateY(-12px); }
+}
+@keyframes gradient { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+@keyframes pulse-disc { 0%, 100% { transform: rotate(12deg) scale(1); } 50% { transform: rotate(-6deg) scale(1.1); } }
+@keyframes ping { from { transform: scale(0.4); opacity: 0.6; } to { transform: scale(3.4); opacity: 0; } }
+@keyframes live { 0% { box-shadow: 0 0 0 0 rgb(207 64 37 / 0.55); } 100% { box-shadow: 0 0 0 12px rgb(207 64 37 / 0); } }
+@keyframes pop { 0% { transform: scale(1); } 40% { transform: scale(1.4); } 100% { transform: scale(1); } }
+@keyframes underline { from { background-size: 0% 0.32em; } }
+@keyframes grow-x { from { transform: scaleX(0); } }
+@keyframes count-up { from { --n: 0; } }
+@keyframes swap { from { opacity: 0; transform: scale(1.05); } }
+@keyframes faq-open { from { opacity: 0; transform: translateY(-10px); } }
+@keyframes wiggle { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-14deg); } 75% { transform: rotate(14deg); } }
+@keyframes bump { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.3); } }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes pop-in { from { opacity: 0; transform: scale(0.4) rotate(-20deg); } }
+@keyframes fall { to { transform: translateY(75vh) rotate(calc(var(--r) + 540deg)); opacity: 0; } }
+@keyframes swing { 0%, 100% { transform: rotate(-9deg); } 50% { transform: rotate(9deg); } }
+@keyframes progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes line-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes show-top { to { opacity: 1; pointer-events: auto; } }
+
+/* ---------- Registered property for the animated counters ---------- */
+@property --n { syntax: "<integer>"; inherits: false; initial-value: 0; }
+
+/* ---------- Entrance animations ---------- */
+.fade-up { animation: fade-up 0.9s var(--ease) backwards; animation-delay: calc(var(--i, 0) * 110ms + 80ms); }
+.fade-in { animation: fade-in 1s ease backwards; }
+
+/* Scroll reveals: time-based fallback first, scroll-driven where supported */
+.reveal { animation: reveal-up 0.9s var(--ease) backwards; animation-delay: calc(var(--n, 0) * 90ms); }
+@supports (animation-timeline: view()) {
+  .reveal {
+    animation: reveal-up linear backwards;
+    animation-timeline: view();
+    animation-range: entry 0% entry 55%;
+    animation-delay: 0s;
+  }
+  .count {
+    animation: count-up linear backwards;
+    animation-timeline: view();
+    animation-range: entry 10% entry 100%;
+  }
+}
+.count { animation: count-up 2.4s var(--ease) backwards; }
+
+/* ---------- Ambient motion ---------- */
+.float { transform: rotate(var(--r, 0deg)); animation: float 7s ease-in-out infinite; }
+.float.f1, .float.a1 { animation-duration: 8s; animation-delay: -2s; }
+.float.f2, .float.a2 { animation-duration: 6.5s; }
+.float.f3, .float.a3 { animation-duration: 7.5s; animation-delay: -4s; }
+.blob { animation: morph 14s ease-in-out infinite; }
+.spin-badge svg { animation: spin 18s linear infinite; }
+.bubble { animation: bob 5s ease-in-out infinite; }
+.bubble.b2 { animation-delay: -2.5s; }
+.hero .shape, .page-hero .shape { animation: drift 16s ease-in-out infinite alternate; }
+.hero .s2, .page-hero .s2 { animation-duration: 20s; animation-direction: alternate-reverse; }
+.page-hero .s3 { animation-duration: 11s; }
+.ring.r1 { animation: spin 50s linear infinite; }
+.ring.r2 { animation: spin 38s linear infinite reverse; }
+.live-dot { animation: live 1.8s ease-out infinite; }
+.hero h1 em { animation: underline 1.1s 1s var(--ease) backwards; }
+.count-badge { animation: bump 1.6s ease-in-out 1.5s 2; }
+
+.marquee-track { animation: marquee 34s linear infinite; }
+.marquee:hover .marquee-track { animation-play-state: paused; }
+
+.announce p { animation: msg 12s ease-in-out infinite backwards; }
+.announce p:nth-child(2) { animation-delay: 4s; }
+.announce p:nth-child(3) { animation-delay: 8s; }
+
+.promo { background-size: 300% 300%; animation: gradient 14s ease infinite; }
+.sale-disc { animation: pulse-disc 3.2s ease-in-out infinite; }
+
+/* ---------- Interaction animations ---------- */
+.wish-input:checked + .wish { animation: pop 0.5s var(--ease); }
+.usp-grid li:hover .usp-ico .ico, .info-list li:hover .usp-ico .ico { animation: wiggle 0.6s ease; }
+details.faq[open] > .faq-body { animation: faq-open 0.45s var(--ease); }
+.bar i { transform-origin: left; animation: grow-x 1.3s var(--ease) var(--d, 0ms) backwards; }
+.meter i { animation: grow-x 1.5s var(--ease) 0.4s backwards; }
+.map .pin .ico { animation: bob 1.8s ease-in-out infinite; }
+.map .pin i { animation: ping 2s ease-out infinite; }
+.map-label { animation: fade-up 1s 0.6s var(--ease) backwards; }
+.sticker { animation: spin 22s linear infinite; }
+
+/* ---------- Thank-you & 404 pages ---------- */
+.check { animation: pop-in 0.7s var(--ease) backwards; }
+.check circle { stroke-dasharray: 340; stroke-dashoffset: 340; animation: draw 0.9s var(--ease) 0.1s forwards; }
+.check path { stroke-dasharray: 90; stroke-dashoffset: 90; animation: draw 0.5s var(--ease) 0.85s forwards; }
+.confetti i { animation: fall 3.4s linear var(--d, 0s) infinite; }
+.big-404 .o img { transform-origin: 50% 8%; animation: swing 3.4s ease-in-out infinite; }
+
+/* ---------- Scroll-linked UI (Chrome / Edge / Safari 26+) ---------- */
+@supports (animation-timeline: scroll()) {
+  .scroll-progress {
+    position: fixed; top: 0; left: 0; z-index: 100; width: 100%; height: 3px;
+    background: var(--accent); transform-origin: left; transform: scaleX(0);
+    animation: progress linear both; animation-timeline: scroll(root);
+  }
+  .site-header::after { opacity: 0; animation: line-in linear both; animation-timeline: scroll(root); animation-range: 0 90px; }
+  .to-top {
+    position: fixed; right: 20px; bottom: 20px; z-index: 40; display: grid; place-items: center; width: 48px; height: 48px;
+    border-radius: 50%; background: var(--ink); color: #fff; box-shadow: var(--shadow-lg);
+    opacity: 0; pointer-events: none;
+    animation: show-top linear both; animation-timeline: scroll(root); animation-range: 500px 700px;
+    transition: background 0.3s, transform 0.3s var(--ease);
+  }
+  .to-top:hover { background: var(--accent); transform: translateY(-4px); }
+}
+
+/* ---------- Respect reduced-motion preferences ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  .check circle, .check path { stroke-dashoffset: 0 !important; }
+  .announce p:not(:first-child) { display: none; }
+  .marquee-track { transform: none; }
+  .scroll-progress, .to-top, .confetti { display: none !important; }
+  @view-transition { navigation: none; }
+}
